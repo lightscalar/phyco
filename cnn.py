@@ -39,38 +39,27 @@ class CNN:
     def build_model(self):
         """Build the convolutional neural network."""
         image_size = self.image_size
-
-        # Build the CNN.
         model = Sequential()
-        model.add(Conv2D(32, (3, 3), input_shape=(image_size, image_size, 1)))
-        # model.add(BatchNormalization(axis=-1))
-        model.add(Activation("relu"))
-        model.add(Conv2D(32, (5, 5)))
-        # model.add(BatchNormalization(axis=-1))
-        model.add(Activation("relu"))
+        model.add(Conv2D(32, (3, 3), padding='same' input_shape=(image_size, image_size, 1)))
+        model.add(Activation('relu'))
+        model.add(Conv2D(32, (3, 3)))
+        model.add(Activation('relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
 
-        # Add another hidden layer.
-        model.add(Conv2D(64, (7, 7)))
-        # model.add(BatchNormalization(axis=-1))
-        model.add(Activation("relu"))
-        model.add(Conv2D(64, (9, 9)))
-        # model.add(BatchNormalization(axis=-1))
-        model.add(Activation("relu"))
+        model.add(Conv2D(64, (3, 3), padding='same'))
+        model.add(Activation('relu'))
+        model.add(Conv2D(64, (3, 3)))
+        model.add(Activation('relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
+
         model.add(Flatten())
-
-        # Full connected layer.
         model.add(Dense(512))
-        # model.add(BatchNormalization())
-        model.add(Activation("relu"))
+        model.add(Activation('relu'))
         model.add(Dropout(0.5))
-        model.add(Dense(512))
-        # model.add(BatchNormalization())
-        model.add(Activation("relu"))
-        model.add(Dropout(0.5))
-        model.add(Dense(11))
-        model.add(Activation("softmax"))
+        model.add(Dense(self.nb_classes))
+        model.add(Activation('softmax'))
         model.compile(
             optimizer="adam", loss="categorical_crossentropy", metrics=["acc"]
         )
