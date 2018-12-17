@@ -22,6 +22,7 @@ class CNN:
         image_size=128,
         epochs_per_iter=10,
         nb_iter=100,
+        load_existing_model=False,
     ):
         """Save CNN basic parameters."""
         self.model_name = model_name
@@ -29,7 +30,11 @@ class CNN:
         self.image_size = image_size
         self.nb_iter = nb_iter
         self.epochs_per_iter = epochs_per_iter
-        self.build_model()
+        if load_existing_model and len(glob(self.model_location)) > 0:
+            print("> Loading model.")
+            self.model = load_model(self.model_location)
+        else:
+            self.build_model()
 
     def build_model(self):
         """Build the convolutional neural network."""
@@ -38,31 +43,32 @@ class CNN:
         # Build the CNN.
         model = Sequential()
         model.add(Conv2D(32, (3, 3), input_shape=(image_size, image_size, 1)))
-        model.add(BatchNormalization(axis=-1))
+        # model.add(BatchNormalization(axis=-1))
         model.add(Activation("relu"))
         model.add(Conv2D(32, (5, 5)))
-        model.add(BatchNormalization(axis=-1))
+        # model.add(BatchNormalization(axis=-1))
         model.add(Activation("relu"))
         model.add(MaxPooling2D(pool_size=(2, 2)))
 
         # Add another hidden layer.
         model.add(Conv2D(64, (7, 7)))
-        model.add(BatchNormalization(axis=-1))
+        # model.add(BatchNormalization(axis=-1))
         model.add(Activation("relu"))
         model.add(Conv2D(64, (9, 9)))
-        model.add(BatchNormalization(axis=-1))
+        # model.add(BatchNormalization(axis=-1))
         model.add(Activation("relu"))
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Flatten())
 
         # Full connected layer.
         model.add(Dense(512))
-        model.add(BatchNormalization())
+        # model.add(BatchNormalization())
         model.add(Activation("relu"))
+        model.add(Dropout(0.5))
         model.add(Dense(512))
-        model.add(BatchNormalization())
+        # model.add(BatchNormalization())
         model.add(Activation("relu"))
-        model.add(Dropout(0.2))
+        model.add(Dropout(0.5))
         model.add(Dense(11))
         model.add(Activation("softmax"))
         model.compile(
@@ -82,5 +88,5 @@ class CNN:
 if __name__ == "__main__":
 
     # Build and train a network.
-    cnn = CNN('algae_classifier')
+    cnn = CNN("algae_classifier", load_existing_model=False)
     cnn.train()
