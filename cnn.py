@@ -30,6 +30,7 @@ class CNN:
         self.image_size = image_size
         self.nb_iter = nb_iter
         self.epochs_per_iter = epochs_per_iter
+        self.nb_classes = nb_classes
         if load_existing_model and len(glob(self.model_location)) > 0:
             print("> Loading model.")
             self.model = load_model(self.model_location)
