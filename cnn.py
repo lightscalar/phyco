@@ -80,5 +80,5 @@ class CNN:
 if __name__ == "__main__":
 
     # Build and train a network.
-    cnn = CNN("algae_classifier", load_existing_model=False)
+    cnn = CNN("algae_classifier", load_existing_model=False, nb_iter=1000)
     cnn.train()
